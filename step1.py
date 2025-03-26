@@ -1,25 +1,50 @@
-# Enter the DV offset and RCS-lambda distacne
+import math
+from google.colab import output
+from IPython.display import display, Javascript
 
-from ipywidgets import widgets, VBox
-from IPython.display import display
+# Create input boxes using JavaScript for better compatibility in Colab
+def create_input_boxes():
+    display(Javascript('''
+    var input1 = document.createElement("input");
+    input1.id = "input1";
+    input1.placeholder = "Enter RCS-lambda distance";
+    input1.style.margin = "5px";
+    
+    var input2 = document.createElement("input");
+    input2.id = "input2";
+    input2.placeholder = "Enter DV offset";
+    input2.style.margin = "5px";
+    
+    var button = document.createElement("button");
+    button.innerHTML = "Submit";
+    button.style.margin = "5px";
+    
+    button.onclick = function() {
+        var val1 = document.getElementById("input1").value;
+        var val2 = document.getElementById("input2").value;
+        google.colab.kernel.invokeFunction("notebook.calculate_angle", [val1, val2], {});
+    }
+    
+    document.body.appendChild(input1);
+    document.body.appendChild(input2);
+    document.body.appendChild(button);
+    '''))
+    
+# Function to calculate and display angle correction
+def AngleCorrection(RCSL, DVoffset):
+    try:
+        # Convert input to float for calculation
+        RCSL = float(RCSL)
+        DVoffset = float(DVoffset)
+        
+        # Calculate pitch correction
+        PitchCorrection = round(math.atan(-DVoffset / RCSL) * 180 / 3.14159, 2)
+        
+        # Print result
+        print(f'Advise angle correction: {PitchCorrection}°')
+    except ValueError:
+        print("⚠️ Please enter valid numerical values.")
 
-# Create two text input boxes
-input_RCSL = widgets.Text(description="RCS-lambda distance: ")
-input_DVoffset = widgets.Text(description="DV offset: ")
-
-# Display the boxes side by side or vertically
-display(VBox([input_RCSL, input_DVoffset]))
-
-# Function to capture and print the inputs when the button is clicked
-def AngleCorrection(b):
-  RCSL = input_RCSL.value
-  DVoffset = input_DVoffset.value
-  PitchCorrection = round(math.atan(-DVoffset/RCSL)*180/3.14159, 2)
-  print(f'Advise angle correction: {PitchCorrection}')
-  
-# Create and display a submit button
-button = widgets.Button(description="Submit")
-button.on_click(AngleCorrection)
-display(button)
-
-
+# Register the function and create input boxes
+output.register_callback('notebook.calculate_angle', AngleCorrection)
+create_input_boxes()
