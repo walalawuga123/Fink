@@ -116,13 +116,11 @@ def AngleCorrection(initial_angle, RCSL, DVoffset):
         )
 
         # Return the AdvisedAngle for later use
-        return AdvisedAngle
+        return AdvisedAngle, result
 
     except ValueError:
         result = "⚠️ Please enter valid numerical values."
-
-    # Display the result
-    output_result(result)
+        return None, result
 
 # Display result in the result box
 def output_result(result):
@@ -135,7 +133,12 @@ def output_result(result):
 # Callback function to update angle and update the sheet
 def update_angle_result(val1, val2, val3):
     # Capture the advised angle from the AngleCorrection function
-    advised_angle = AngleCorrection(val1, val2, val3)
+    advised_angle, result = AngleCorrection(val1, val2, val3)
+
+    # If no valid result, show error and return
+    if not advised_angle:
+        output_result(result)
+        return
 
     # Fetch the head_parameter DataFrame from Google Sheets
     file_id = '17t6CB6Nze274z1od3cmfdKnHZ2OMLdFFay7yMQ_Ofi0'  # Use the correct Google Sheet ID
@@ -146,12 +149,14 @@ def update_angle_result(val1, val2, val3):
     new_mouse_id = head_parameter.columns[-1]  # Assuming last column is new mouse ID
 
     # Update the sheet with the advised angle at the 8th column (index 8)
-    head_parameter.iloc[-1,7] = val2
-    head_parameter.iloc[-1,8] = advised_angle
+    head_parameter.iloc[-1, 8] = advised_angle
 
     # Write the updated DataFrame back to the sheet
     worksheet.clear()
     set_with_dataframe(worksheet, head_parameter)
+
+    # Display the result in the result box
+    output_result(result)
 
     # Plot the histogram with the advised angle
     plot_histogram(advised_angle)
@@ -162,51 +167,4 @@ def plot_histogram(mousedata):
     file_id = '17t6CB6Nze274z1od3cmfdKnHZ2OMLdFFay7yMQ_Ofi0'  # Use the correct Google Sheet ID
     sh = gc.open_by_key(file_id)
     worksheet = sh.get_worksheet(0)
-    head_parameter = pd.DataFrame(worksheet.get_all_records())
-
-    pitch_raw = head_parameter.iloc[8, 6:-1].values
-    pitch_metadata = [x for x in pitch_raw if x != '']
-    pitch_mean = np.mean(pitch_metadata)
-    pitch_std = np.std(pitch_metadata)
-
-    binwidth = pitch_std / 2  # binsize
-    bins = np.arange(min(pitch_metadata), max(pitch_metadata) + binwidth, binwidth)
-
-    fig, ax = plt.subplots(figsize=(5, 5))
-    y, x, _ = ax.hist(pitch_metadata, color='black', bins=bins, rwidth=0.8)  # obtain x and y of the histogram
-    Ylim = 1.1 * max(y)  # calculate max height of the histogram
-
-    ax.axvline(pitch_mean, lw=2, color='black', ls='-')  # mean
-    for n in [1, -1]:
-        ax.axvline(pitch_mean + n * pitch_std, lw=1, color='black', ls='--')  # 1 std
-        ax.axvline(pitch_mean + 2 * n * pitch_std, lw=1, color='black', ls='dotted')  # 2 std
-    
-    ax.set_xlabel('Pitch angle (˚)')
-    ax.set_ylabel('Number of mice')
-    ax.set_xlim(pitch_mean - 4 * pitch_std, pitch_mean + 4 * pitch_std)
-    ax.set_ylim(0, Ylim * 1.1)
-
-    # Check if mousedata is inside the valid range and plot accordingly
-    if pitch_mean - 2 * pitch_std <= mousedata <= pitch_mean + 2 * pitch_std:
-        ax.scatter(mousedata, max(y), color='red', marker='*', s=100)
-    else:
-        ax.scatter(mousedata, max(y), facecolors='none', edgecolor='blue', marker='o', s=100)
-        ax.scatter(mousedata, max(y), color='blue', marker='.', s=50)
-        ax.set_title("PARAMETER OUT OF BOUNDS!", fontweight="bold")
-
-    # Convert plot to image and display in result box
-    img_buf = BytesIO()
-    fig.savefig(img_buf, format='png')
-    img_buf.seek(0)
-    img_base64 = base64.b64encode(img_buf.read()).decode('utf-8')
-
-    display(Javascript(f'''
-    var plotBox = document.getElementById("plotBox");
-    plotBox.innerHTML = '<img src="data:image/png;base64,' + "{img_base64}" + '" />';
-    '''))
-
-# Register and run the callback to update angle and sheet
-output.register_callback('notebook.update_angle_result', update_angle_result)
-
-# Initialize the input boxes and the callback
-create_input_boxes()
+    head_parameter = pd.DataFrame(worksheet.get_all
