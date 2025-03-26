@@ -15,6 +15,7 @@ filename = gdown.download(f"https://drive.google.com/uc?id={file_id}", "download
 head_parameter = pd.read_excel(filename, sheet_name='Sheet1')
 new_mouse_id = str(input("Mouse ID: "))
 head_parameter[new_mouse_id] = ""
+print(head_parameter[new_mouse_id])
 
 # Open the existing Google Sheet using its file ID
 #sh = gc.open_by_key(file_id)  # Open the Google Sheet with the same file_id
