@@ -203,15 +203,25 @@ def finish_correction():
 
     head_parameter = pd.DataFrame(worksheet.get_all_records())  # Fetch all records from the sheet
     
+    # Collect final input for all columns via JavaScript prompt (ensure user interaction)
+    final_xR1000 = prompt("Enter final xR1000");
+    final_xR3000 = prompt("Enter final xR3000");
+    final_zR1000 = prompt("Enter final zR1000");
+    final_zR3000 = prompt("Enter final zR3000");
+    final_xL1000 = prompt("Enter final xL1000");
+    final_xL3000 = prompt("Enter final xL3000");
+    final_zL1000 = prompt("Enter final zL1000");
+    final_zL3000 = prompt("Enter final zL3000");
+
     # Update the sheet with the final values
-    head_parameter.iloc[17, -1] = input("Enter final xR1000") # Replace with the final value entered
-    head_parameter.iloc[21, -1] = input("Enter final xR3000") 
-    head_parameter.iloc[33, -1] = input("Enter final zR1000")
-    head_parameter.iloc[37, -1] = input("Enter final zR3000") 
-    head_parameter.iloc[9, -1] = input("Enter final xL1000")
-    head_parameter.iloc[13, -1] = input("Enter final xL3000") 
-    head_parameter.iloc[25, -1] = input("Enter final zL1000")
-    head_parameter.iloc[29, -1] = input("Enter final zL3000") 
+    head_parameter.iloc[17, -1] = final_xR1000
+    head_parameter.iloc[21, -1] = final_xR3000
+    head_parameter.iloc[33, -1] = final_zR1000
+    head_parameter.iloc[37, -1] = final_zR3000
+    head_parameter.iloc[9, -1] = final_xL1000
+    head_parameter.iloc[13, -1] = final_xL3000
+    head_parameter.iloc[25, -1] = final_zL1000
+    head_parameter.iloc[29, -1] = final_zL3000
 
     # Write the updated DataFrame back to the sheet
     worksheet.clear()
