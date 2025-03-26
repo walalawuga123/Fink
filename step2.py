@@ -111,6 +111,7 @@ def create_input_boxes():
     container.appendChild(resultBox);
     document.body.appendChild(container);
     '''))
+
     
 # Python callback to compute corrections and update Google Sheets
 def CorrectionCalculation(xR1000, xR3000, zR1000, zR3000, xL1000, xL3000, zL1000, zL3000):
