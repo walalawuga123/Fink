@@ -191,14 +191,14 @@ def plot_histogram(mousedata):
     ax.set_xlabel('Pitch angle (˚)')
     ax.set_ylabel('Number of mice')
     ax.set_xlim(pitch_mean - 4 * pitch_std, pitch_mean + 4 * pitch_std)
-    ax.set_ylim(0, Ylim * 1.1)
+    ax.set_ylim(0, Ylim)
 
     # Check if mousedata is inside the valid range and plot accordingly
     if pitch_mean - 2 * pitch_std <= mousedata <= pitch_mean + 2 * pitch_std:
         ax.scatter(mousedata, max(y), color='red', marker='*', s=100)
     else:
-        ax.scatter(mousedata, max(y), facecolors='none', edgecolor='blue', marker='o', s=100)
-        ax.scatter(mousedata, max(y), color='blue', marker='.', s=50)
+        ax.scatter(mousedata, Ylim*0.9, facecolors='none', edgecolor='blue', marker='o', s=100)
+        ax.scatter(mousedata, Ylim*0.9, color='blue', marker='.', s=50)
         ax.set_title("PARAMETER OUT OF BOUNDS!", fontweight="bold")
 
     # Convert plot to image and display in result box
