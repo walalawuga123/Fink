@@ -13,18 +13,18 @@ auth.authenticate_user() # Authenticate manually to avoid errors
 creds, _ = default()
 gc = gspread.authorize(creds)
 
-# Load and modify the Excel file
-import os
-print(os.listdir())  # Check if the file exists
-
 file_id = '1e7ZqoPTFdUS_E163w0M41izWisuC9tJd' # need to be change after switch files
 filename = gdown.download(f"https://drive.google.com/uc?id={file_id}", "downloaded_file.xlsx", quiet=False)
 head_parameter = pd.read_excel(filename, sheet_name='Sheet1')
 new_mouse_id = str(input("Mouse ID: "))
 head_parameter[new_mouse_id] = ""
 
-# Open the existing Google Sheet using its file ID
-sh = gc.open_by_key(file_id)  # Open the Google Sheet with the same file_id
-worksheet = sh.get_worksheet(0)  # Select the first sheet
-worksheet.clear()  # Clear the old content
-set_with_dataframe(worksheet, df)  # Overwrite the sheet with new data
+
+try:
+    # Try opening the Google Sheet
+    sh = gc.open_by_key(file_id)
+    worksheet = sh.get_worksheet(0)
+    worksheet.clear()
+    set_with_dataframe(worksheet, df)
+except Exception as e:
+    print("Error opening Google Sheet:", e)
