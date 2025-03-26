@@ -133,8 +133,10 @@ def CorrectionCalculation(xR1000, xR3000, zR1000, zR3000, xL1000, xL3000, zL1000
         zL3000 = float(zL3000)
 
         # Theta Calculations
-        Theta_L = round(-math.atan((xL3000 - xL1000) / 2000) * 360 / (2 * math.pi), 4)
-        Theta_R = round(math.atan((xR3000 - zR1000) / 2000) * 360 / (2 * math.pi), 4)
+        Theta_L = round(-math.atan((xL3000 - xL1000) / 2000) * 180 /  math.pi, 4)
+        Theta_R = round(math.atan((xR3000 - zR1000) / 2000) * 180 / math.pi, 4)
+        print(Theta_L)
+        print(Theta_R)
         YawCorrection = round((Theta_R - Theta_L) / 2, 3)
 
         # Offsets and Ratios
