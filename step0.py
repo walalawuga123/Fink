@@ -19,12 +19,8 @@ head_parameter = pd.read_excel(filename, sheet_name='Sheet1')
 new_mouse_id = str(input("Mouse ID: "))
 head_parameter[new_mouse_id] = ""
 
-
-try:
-    # Try opening the Google Sheet
-    sh = gc.open_by_key(file_id)
-    worksheet = sh.get_worksheet(0)
-    worksheet.clear()
-    set_with_dataframe(worksheet, df)
-except Exception as e:
-    print("Error opening Google Sheet:", e)
+# Try opening the Google Sheet
+sh = gc.open_by_key(file_id)
+worksheet = sh.get_worksheet(0)
+worksheet.clear()
+set_with_dataframe(worksheet, df)
