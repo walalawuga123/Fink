@@ -113,15 +113,15 @@ def create_input_boxes():
 
     // Button click actions for Submit and Finish correction
     button.onclick = function() {
-        var val1 = document.getElementById("xL1000").value;
-        var val2 = document.getElementById("xL3000").value;
-        var val3 = document.getElementById("xR1000").value;
-        var val4 = document.getElementById("xR3000").value;
-        var val5 = document.getElementById("zL1000").value;
-        var val6 = document.getElementById("zL3000").value;
-        var val7 = document.getElementById("zR1000").value;
-        var val8 = document.getElementById("zR3000").value;
-        google.colab.kernel.invokeFunction("notebook.update_correction_result", [val1, val3, val5, val7, val2, val4, val6, val8], {});
+        var val1 = document.getElementById("xR1000").value;
+        var val2 = document.getElementById("xR3000").value;
+        var val3 = document.getElementById("zR1000").value;
+        var val4 = document.getElementById("zR3000").value;
+        var val5 = document.getElementById("xL1000").value;
+        var val6 = document.getElementById("xL3000").value;
+        var val7 = document.getElementById("zL1000").value;
+        var val8 = document.getElementById("zL3000").value;
+        google.colab.kernel.invokeFunction("notebook.update_correction_result", [val1, val2, val3, val4, val5, val6, val7, val8], {});
     }
 
     finishButton.onclick = function() {
