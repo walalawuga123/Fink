@@ -110,6 +110,23 @@ def create_input_boxes():
     container.appendChild(finishButton);
     container.appendChild(resultBox);
     document.body.appendChild(container);
+
+    // Button click actions for Submit and Finish correction
+    button.onclick = function() {
+        var val1 = document.getElementById("xL1000").value;
+        var val2 = document.getElementById("xL3000").value;
+        var val3 = document.getElementById("xR1000").value;
+        var val4 = document.getElementById("xR3000").value;
+        var val5 = document.getElementById("zL1000").value;
+        var val6 = document.getElementById("zL3000").value;
+        var val7 = document.getElementById("zR1000").value;
+        var val8 = document.getElementById("zR3000").value;
+        google.colab.kernel.invokeFunction("notebook.update_correction_result", [val1, val2, val3, val4, val5, val6, val7, val8], {});
+    }
+
+    finishButton.onclick = function() {
+        google.colab.kernel.invokeFunction("notebook.finish_correction", [], {});
+    }
     '''))
     
 # Python callback to compute corrections and update Google Sheets
