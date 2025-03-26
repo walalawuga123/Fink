@@ -15,7 +15,7 @@ filename = gdown.download(f"https://drive.google.com/uc?id={file_id}", "download
 head_parameter = pd.read_excel(filename, sheet_name='Sheet1')
 l = len(head_parameter.columns)
 print(l)
-print(head_parameter[:,l])
+#print(head_parameter[:,l])
 
 # Open the existing Google Sheet using its file ID
 #sh = gc.open_by_key(file_id)  # Open the Google Sheet with the same file_id
