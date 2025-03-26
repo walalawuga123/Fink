@@ -18,7 +18,7 @@ head_parameter[new_mouse_id] = ""
 print(head_parameter[new_mouse_id])
 
 # Open the existing Google Sheet using its file ID
-#sh = gc.open_by_key(file_id)  # Open the Google Sheet with the same file_id
-#worksheet = sh.get_worksheet(0)  # Select the first sheet
-#worksheet.clear()  # Clear the old content
-#set_with_dataframe(worksheet, df)  # Overwrite the sheet with new data
+sh = gc.open_by_key(file_id)  # Open the Google Sheet with the same file_id
+worksheet = sh.get_worksheet(0)  # Select the first sheet
+worksheet.clear()  # Clear the old content
+set_with_dataframe(worksheet, df)  # Overwrite the sheet with new data
