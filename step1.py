@@ -101,12 +101,13 @@ def create_input_boxes():
     '''))
     
 # Python callback to compute angle and return final result
-def AngleCorrection(RCSL, DVoffset, initial_angle):
+
+def AngleCorrection(initial_angle, RCSL, DVoffset):
     try:
         # Convert all values to float
+        initial_angle = float(initial_angle)
         RCSL = float(RCSL)
         DVoffset = float(DVoffset)
-        initial_angle = float(initial_angle)
 
         # Calculate pitch correction
         PitchCorrection = round(math.atan(-DVoffset / RCSL) * 180 / math.pi, 2)
