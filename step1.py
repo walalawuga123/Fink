@@ -2,8 +2,23 @@
 import math
 from google.colab import output
 from IPython.display import display, Javascript
+import gspread
+import pandas as pd
+from google.colab import drive
+from gspread_dataframe import set_with_dataframe
+from google.auth import default
+from google.colab import auth
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Create styled input interface with JS
+# Mount Google Drive and authenticate
+drive.mount('/content/drive')
+auth.authenticate_user()  # Authenticate manually to avoid errors
+# Get authenticated credentials
+creds, _ = default()
+gc = gspread.authorize(creds)
+
+# Function to create input boxes and submit button using JS
 def create_input_boxes():
     display(Javascript('''
     // Create input elements
@@ -51,7 +66,7 @@ def create_input_boxes():
         var val1 = document.getElementById("input1").value;
         var val2 = document.getElementById("input2").value;
         var val3 = document.getElementById("input3").value;
-        google.colab.kernel.invokeFunction("notebook.calculate_angle", [val1, val2, val3], {});
+        google.colab.kernel.invokeFunction("notebook.update_angle_result", [val1, val2, val3], {});
     }
 
     // Add everything to the container
@@ -70,8 +85,7 @@ def create_input_boxes():
     document.body.appendChild(container);
     '''))
     
-# Python callback to compute angle and return final result
-
+# Python callback to compute angle correction and update Google Sheets
 def AngleCorrection(initial_angle, RCSL, DVoffset):
     try:
         # Convert all values to float
@@ -92,20 +106,87 @@ def AngleCorrection(initial_angle, RCSL, DVoffset):
             f"Advised angle: {AdvisedAngle}°"
         )
 
+        # Return the AdvisedAngle for later use
+        return AdvisedAngle
+
     except ValueError:
         result = "⚠️ Please enter valid numerical values."
 
     # Display the result
     output_result(result)
 
-# Display result in textarea
+# Display result in the result box
 def output_result(result):
     display(Javascript(f'''
     var resultBox = document.getElementById("resultBox");
     resultBox.style.display = "block";
     resultBox.value = `{result}`;
     '''))
+
+# Callback function to update angle and update the sheet
+def update_angle_result(val1, val2, val3):
+    # Capture the advised angle from the AngleCorrection function
+    advised_angle = AngleCorrection(val1, val2, val3)
+
+    # Fetch the head_parameter DataFrame from Google Sheets
+    file_id = '17t6CB6Nze274z1od3cmfdKnHZ2OMLdFFay7yMQ_Ofi0'  # Use the correct Google Sheet ID
+    sh = gc.open_by_key(file_id)  # Open the Google Sheet with the file_id
+    worksheet = sh.get_worksheet(0)  # Select the first sheet
+
+    head_parameter = pd.DataFrame(worksheet.get_all_records())  # Fetch all records from the sheet
+    new_mouse_id = head_parameter.columns[-1]  # Assuming last column is new mouse ID
+
+    # Update the sheet with the advised angle at the 8th column (index 8)
+    head_parameter.loc[head_parameter[new_mouse_id] == head_parameter[new_mouse_id].iloc[-1], head_parameter.columns[8]] = advised_angle
+
+    # Write the updated DataFrame back to the sheet
+    worksheet.clear()
+    set_with_dataframe(worksheet, head_parameter)
+
+    # Plot the histogram with the advised angle
+    plot_histogram(advised_angle)
+
+# Function to plot histogram with the advised angle
+def plot_histogram(mousedata):
+    # Fetch data for histogram
+    file_id = '17t6CB6Nze274z1od3cmfdKnHZ2OMLdFFay7yMQ_Ofi0'  # Use the correct Google Sheet ID
+    sh = gc.open_by_key(file_id)
+    worksheet = sh.get_worksheet(0)
+    head_parameter = pd.DataFrame(worksheet.get_all_records())
+
+    pitch_raw = head_parameter.iloc[8, 6:-1].values
+    pitch_metadata = [x for x in pitch_raw if x != '']
+    pitch_mean = np.mean(pitch_metadata)
+    pitch_std = np.std(pitch_metadata)
+
+    binwidth = pitch_std / 2  # binsize
+    bins = np.arange(min(pitch_metadata), max(pitch_metadata) + binwidth, binwidth)
+
+    fig, ax = plt.subplots(figsize=(5, 5))
+    y, x, _ = ax.hist(pitch_metadata, color='black', bins=bins, rwidth=0.8)  # obtain x and y of the histogram
+    Ylim = 1.1 * max(y)  # calculate max height of the histogram
+
+    for n in [1, -1]:
+        ax.axvline(pitch_mean + n * pitch_std, lw=1, color='black', ls='--')  # 1 std
+        ax.axvline(pitch_mean + 2 * n * pitch_std, lw=1, color='black', ls='dotted')  # 2 std
     
-# Register and run
-output.register_callback('notebook.calculate_angle', AngleCorrection)
+    ax.set_xlabel('Pitch angle (˚)')
+    ax.set_ylabel('Number of mice')
+    ax.set_xlim(pitch_mean - 4 * pitch_std, pitch_mean + 4 * pitch_std)
+    ax.set_ylim(0, Ylim * 1.1)
+
+    # Check if mousedata is inside the valid range and plot accordingly
+    if pitch_mean - 2 * pitch_std <= mousedata <= pitch_mean + 2 * pitch_std:
+        ax.scatter(mousedata, 0, color='red', marker='*', s=100)
+    else:
+        ax.scatter(mousedata, 0, facecolors='none', edgecolor='blue', marker='o', s=100)
+        ax.scatter(mousedata, 0, color='blue', marker='.', s=50)
+        ax.set_title("PARAMETER OUT OF BOUNDS!", fontweight="bold")
+
+    plt.show()
+
+# Register and run the callback to update angle and sheet
+output.register_callback('notebook.update_angle_result', update_angle_result)
+
+# Initialize the input boxes and the callback
 create_input_boxes()
