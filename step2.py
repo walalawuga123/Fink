@@ -89,12 +89,12 @@ def create_input_boxes():
 
     // Append inputs to the container in the desired order (4 columns)
     inputContainer.appendChild(input1); // xL1000
-    inputContainer.appendChild(input2); // xL3000
     inputContainer.appendChild(input3); // xR1000
-    inputContainer.appendChild(input4); // xR3000
     inputContainer.appendChild(input5); // zL1000
-    inputContainer.appendChild(input6); // zL3000
     inputContainer.appendChild(input7); // zR1000
+    inputContainer.appendChild(input2); // xL3000
+    inputContainer.appendChild(input4); // xR3000
+    inputContainer.appendChild(input6); // zL3000
     inputContainer.appendChild(input8); // zR3000
 
     // Add the container, buttons, and result box to the page
