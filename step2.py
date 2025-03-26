@@ -21,6 +21,7 @@ creds, _ = default()
 gc = gspread.authorize(creds)
 
 # Function to create input boxes and submit button using JS
+# Function to create input boxes and submit button using JS
 def create_input_boxes():
     display(Javascript('''
     // Create input elements
@@ -31,7 +32,7 @@ def create_input_boxes():
         input.style.margin = "10px";
         input.style.padding = "12px";
         input.style.fontSize = "16px";
-        input.style.width = "300px";
+        input.style.width = "250px";
         input.style.height = "40px";
         return input;
     }
@@ -44,7 +45,7 @@ def create_input_boxes():
     var input6 = createInput("xL3000", "Enter xL3000");
     var input7 = createInput("zL1000", "Enter zL1000");
     var input8 = createInput("zL3000", "Enter zL3000");
-    
+
     // Submit button
     var button = document.createElement("button");
     button.innerHTML = "Submit";
@@ -68,36 +69,36 @@ def create_input_boxes():
     finishButton.style.border = "none";
     finishButton.style.borderRadius = "8px";
     finishButton.style.cursor = "pointer";
-    
+
     // Result output box
     var resultBox = document.createElement("textarea");
     resultBox.id = "resultBox";
     resultBox.style.margin = "10px";
     resultBox.style.padding = "12px";
     resultBox.style.fontSize = "16px";
-    resultBox.style.width = "300px";
+    resultBox.style.width = "250px";
     resultBox.style.height = "100px";
     resultBox.style.display = "block";  // Ensure it's visible by default
     resultBox.readOnly = true;
 
-    // Button click actions
-    button.onclick = function() {
-        var val1 = document.getElementById("xR1000").value;
-        var val2 = document.getElementById("xR3000").value;
-        var val3 = document.getElementById("zR1000").value;
-        var val4 = document.getElementById("zR3000").value;
-        var val5 = document.getElementById("xL1000").value;
-        var val6 = document.getElementById("xL3000").value;
-        var val7 = document.getElementById("zL1000").value;
-        var val8 = document.getElementById("zL3000").value;
-        google.colab.kernel.invokeFunction("notebook.update_correction_result", [val1, val2, val3, val4, val5, val6, val7, val8], {});
-    }
+    // Create a container for the input fields and arrange them in 2 columns
+    var inputContainer = document.createElement("div");
+    inputContainer.style.display = "grid";
+    inputContainer.style.gridTemplateColumns = "1fr 1fr"; // 2 columns
+    inputContainer.style.gridGap = "10px";
+    inputContainer.style.marginTop = "20px";
 
-    finishButton.onclick = function() {
-        google.colab.kernel.invokeFunction("notebook.finish_correction", [], {});
-    }
-    
-    // Add everything to the container
+    // Append inputs to the container
+    inputContainer.appendChild(input1);
+    inputContainer.appendChild(input2);
+    inputContainer.appendChild(input3);
+    inputContainer.appendChild(input4);
+    inputContainer.appendChild(input5);
+    inputContainer.appendChild(input6);
+    inputContainer.appendChild(input7);
+    inputContainer.appendChild(input8);
+
+    // Add the container, buttons, and result box to the page
     var container = document.createElement("div");
     container.className = "custom-inputs";
     container.style.display = "flex";
@@ -105,14 +106,7 @@ def create_input_boxes():
     container.style.alignItems = "center";
     container.style.marginTop = "20px";
 
-    container.appendChild(input1);
-    container.appendChild(input2);
-    container.appendChild(input3);
-    container.appendChild(input4);
-    container.appendChild(input5);
-    container.appendChild(input6);
-    container.appendChild(input7);
-    container.appendChild(input8);
+    container.appendChild(inputContainer);
     container.appendChild(button);
     container.appendChild(finishButton);
     container.appendChild(resultBox);
@@ -134,9 +128,7 @@ def CorrectionCalculation(xR1000, xR3000, zR1000, zR3000, xL1000, xL3000, zL1000
 
         # Theta Calculations
         Theta_L = round(-math.atan((xL3000 - xL1000) / 2000) * 180 /  math.pi, 4)
-        Theta_R = round(math.atan((xR3000 - zR1000) / 2000) * 180 / math.pi, 4)
-        print(Theta_L)
-        print(Theta_R)
+        Theta_R = round(math.atan((xR3000 - xR1000) / 2000) * 180 / math.pi, 4)
         YawCorrection = round((Theta_R - Theta_L) / 2, 3)
 
         # Offsets and Ratios
