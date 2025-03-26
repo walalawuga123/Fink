@@ -46,41 +46,12 @@ def create_input_boxes():
     resultBox.style.display = "none";
     resultBox.readOnly = true;
 
-    // Finish button
-    var finishButton = document.createElement("button");
-    finishButton.innerHTML = "Finish";
-    finishButton.style.margin = "10px";
-    finishButton.style.padding = "12px 20px";
-    finishButton.style.fontSize = "16px";
-    finishButton.style.backgroundColor = "#f44336";
-    finishButton.style.color = "white";
-    finishButton.style.border = "none";
-    finishButton.style.borderRadius = "8px";
-    finishButton.style.cursor = "pointer";
-    finishButton.style.display = "none";
-
     // Button click action
     button.onclick = function() {
         var val1 = document.getElementById("input1").value;
         var val2 = document.getElementById("input2").value;
         var val3 = document.getElementById("input3").value;
         google.colab.kernel.invokeFunction("notebook.calculate_angle", [val1, val2, val3], {});
-    }
-
-    // Finish click action
-    finishButton.onclick = function() {
-        input1.style.display = "none";
-        input2.style.display = "none";
-        input3.style.display = "none";
-        resultBox.style.display = "none";
-        button.style.display = "none";
-        finishButton.style.display = "none";
-    }
-
-    // Remove any old UI
-    var old = document.getElementsByClassName("custom-inputs");
-    while (old.length > 0) {
-        old[0].parentNode.removeChild(old[0]);
     }
 
     // Add everything to the container
@@ -96,7 +67,6 @@ def create_input_boxes():
     container.appendChild(input3);
     container.appendChild(button);
     container.appendChild(resultBox);
-    container.appendChild(finishButton);
     document.body.appendChild(container);
     '''))
     
@@ -134,9 +104,6 @@ def output_result(result):
     var resultBox = document.getElementById("resultBox");
     resultBox.style.display = "block";
     resultBox.value = `{result}`;
-
-    var finishButton = document.querySelector("button:nth-of-type(2)");
-    finishButton.style.display = "block";
     '''))
     
 # Register and run
