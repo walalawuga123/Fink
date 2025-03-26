@@ -121,7 +121,7 @@ def create_input_boxes():
         var val6 = document.getElementById("zL3000").value;
         var val7 = document.getElementById("zR1000").value;
         var val8 = document.getElementById("zR3000").value;
-        google.colab.kernel.invokeFunction("notebook.update_correction_result", [val1, val2, val3, val4, val5, val6, val7, val8], {});
+        google.colab.kernel.invokeFunction("notebook.update_correction_result", [val1, val3, val5, val7, val2, val4, val6, val8], {});
     }
 
     finishButton.onclick = function() {
