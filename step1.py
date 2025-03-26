@@ -137,7 +137,8 @@ def update_angle_result(val1, val2, val3):
     new_mouse_id = head_parameter.columns[-1]  # Assuming last column is new mouse ID
 
     # Update the sheet with the advised angle at the 8th column (index 8)
-    head_parameter.loc[head_parameter[new_mouse_id] == head_parameter[new_mouse_id].iloc[-1], head_parameter.columns[8]] = advised_angle
+    head_parameter.iloc[7,-1] = val2
+    head_parameter.iloc[8,-1] = advised_angle
 
     # Write the updated DataFrame back to the sheet
     worksheet.clear()
@@ -166,6 +167,7 @@ def plot_histogram(mousedata):
     y, x, _ = ax.hist(pitch_metadata, color='black', bins=bins, rwidth=0.8)  # obtain x and y of the histogram
     Ylim = 1.1 * max(y)  # calculate max height of the histogram
 
+    ax.axvline(pitch_mean, lw=2, color='black', ls='-')  # mean
     for n in [1, -1]:
         ax.axvline(pitch_mean + n * pitch_std, lw=1, color='black', ls='--')  # 1 std
         ax.axvline(pitch_mean + 2 * n * pitch_std, lw=1, color='black', ls='dotted')  # 2 std
@@ -177,10 +179,10 @@ def plot_histogram(mousedata):
 
     # Check if mousedata is inside the valid range and plot accordingly
     if pitch_mean - 2 * pitch_std <= mousedata <= pitch_mean + 2 * pitch_std:
-        ax.scatter(mousedata, 0, color='red', marker='*', s=100)
+        ax.scatter(mousedata, max(y), color='red', marker='*', s=100)
     else:
-        ax.scatter(mousedata, 0, facecolors='none', edgecolor='blue', marker='o', s=100)
-        ax.scatter(mousedata, 0, color='blue', marker='.', s=50)
+        ax.scatter(mousedata, max(y), facecolors='none', edgecolor='blue', marker='o', s=100)
+        ax.scatter(mousedata, max(y), color='blue', marker='.', s=50)
         ax.set_title("PARAMETER OUT OF BOUNDS!", fontweight="bold")
 
     plt.show()
