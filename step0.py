@@ -14,6 +14,8 @@ creds, _ = default()
 gc = gspread.authorize(creds)
 
 # Load and modify the Excel file
+import os
+print(os.listdir())  # Check if the file exists
 
 file_id = '1e7ZqoPTFdUS_E163w0M41izWisuC9tJd' # need to be change after switch files
 filename = gdown.download(f"https://drive.google.com/uc?id={file_id}", "downloaded_file.xlsx", quiet=False)
