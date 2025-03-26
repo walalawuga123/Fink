@@ -60,7 +60,7 @@ def create_input_boxes():
     resultBox.style.fontSize = "16px";
     resultBox.style.width = "300px";
     resultBox.style.height = "100px";
-    resultBox.style.display = "none";
+    resultBox.style.display = "block";  // Ensure it's visible by default
     resultBox.readOnly = true;
 
     // Plot result box (for embedding the plot)
