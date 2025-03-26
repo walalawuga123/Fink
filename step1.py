@@ -149,12 +149,14 @@ def update_angle_result(val1, val2, val3):
     new_mouse_id = head_parameter.columns[-1]  # Assuming last column is new mouse ID
 
     # Update the sheet with the advised angle at the 8th column (index 8)
-    head_parameter.iloc[-1, 8] = advised_angle
-
+    head_parameter.iloc[7, -1] = val2 # RCS-Lambda distance
+    head_parameter.iloc[8, -1] = advised_angle
+    
+    
     # Write the updated DataFrame back to the sheet
     worksheet.clear()
     set_with_dataframe(worksheet, head_parameter)
-
+    
     # Display the result in the result box
     output_result(result)
 
