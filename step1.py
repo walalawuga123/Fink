@@ -19,10 +19,10 @@ def create_input_boxes():
         return input;
     }
 
-    var input1 = createInput("input1", "Enter RCS-lambda distance");
-    var input2 = createInput("input2", "Enter DV offset");
-    var input3 = createInput("input3", "Enter Initial angle");
-
+    var input1 = createInput("input1", "Enter Initial angle");
+    var input2 = createInput("input2", "Enter RCS-lambda distance")
+    var input3 = createInput("input3", "Enter DV offset");
+    
     // Submit button
     var button = document.createElement("button");
     button.innerHTML = "Submit";
@@ -116,9 +116,9 @@ def AngleCorrection(RCSL, DVoffset, initial_angle):
 
         # Compose result
         result = (
-            f"✅ Pitch correction: {PitchCorrection}°\\n"
-            f"➕ Initial angle: {initial_angle}°\\n"
-            f"🎯 Advised angle: {AdvisedAngle}°"
+            f"Pitch correction: {PitchCorrection}°\\n\\n"
+            f"Initial angle: {initial_angle}°\\n\\n"
+            f"Advised angle: {AdvisedAngle}°"
         )
 
     except ValueError:
