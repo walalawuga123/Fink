@@ -21,7 +21,6 @@ creds, _ = default()
 gc = gspread.authorize(creds)
 
 # Function to create input boxes and submit button using JS
-# Function to create input boxes and submit button using JS
 def create_input_boxes():
     display(Javascript('''
     // Create input elements
@@ -37,14 +36,14 @@ def create_input_boxes():
         return input;
     }
 
-    var input1 = createInput("xR1000", "Enter xR1000");
-    var input2 = createInput("xR3000", "Enter xR3000");
-    var input3 = createInput("zR1000", "Enter zR1000");
-    var input4 = createInput("zR3000", "Enter zR3000");
-    var input5 = createInput("xL1000", "Enter xL1000");
-    var input6 = createInput("xL3000", "Enter xL3000");
-    var input7 = createInput("zL1000", "Enter zL1000");
-    var input8 = createInput("zL3000", "Enter zL3000");
+    var input1 = createInput("xL1000", "Enter xL1000");
+    var input2 = createInput("xL3000", "Enter xL3000");
+    var input3 = createInput("xR1000", "Enter xR1000");
+    var input4 = createInput("xR3000", "Enter xR3000");
+    var input5 = createInput("zL1000", "Enter zL1000");
+    var input6 = createInput("zL3000", "Enter zL3000");
+    var input7 = createInput("zR1000", "Enter zR1000");
+    var input8 = createInput("zR3000", "Enter zR3000");
 
     // Submit button
     var button = document.createElement("button");
@@ -81,22 +80,22 @@ def create_input_boxes():
     resultBox.style.display = "block";  // Ensure it's visible by default
     resultBox.readOnly = true;
 
-    // Create a container for the input fields and arrange them in 2 columns
+    // Create a container for the input fields and arrange them in 4 columns
     var inputContainer = document.createElement("div");
     inputContainer.style.display = "grid";
-    inputContainer.style.gridTemplateColumns = "1fr 1fr"; // 2 columns
+    inputContainer.style.gridTemplateColumns = "1fr 1fr 1fr 1fr"; // 4 columns
     inputContainer.style.gridGap = "10px";
     inputContainer.style.marginTop = "20px";
 
-    // Append inputs to the container
-    inputContainer.appendChild(input1);
-    inputContainer.appendChild(input2);
-    inputContainer.appendChild(input3);
-    inputContainer.appendChild(input4);
-    inputContainer.appendChild(input5);
-    inputContainer.appendChild(input6);
-    inputContainer.appendChild(input7);
-    inputContainer.appendChild(input8);
+    // Append inputs to the container in the desired order (4 columns)
+    inputContainer.appendChild(input1); // xL1000
+    inputContainer.appendChild(input2); // xL3000
+    inputContainer.appendChild(input3); // xR1000
+    inputContainer.appendChild(input4); // xR3000
+    inputContainer.appendChild(input5); // zL1000
+    inputContainer.appendChild(input6); // zL3000
+    inputContainer.appendChild(input7); // zR1000
+    inputContainer.appendChild(input8); // zR3000
 
     // Add the container, buttons, and result box to the page
     var container = document.createElement("div");
