@@ -8,7 +8,7 @@ input_RCSL = widgets.Text(description="RCS-lambda distance: ")
 input_DVoffset = widgets.Text(description="DV offset: ")
 
 # Display the boxes side by side or vertically
-display(VBox([input_box1, input_box2]))
+display(VBox([input_RCSL, input_DVoffset]))
 
 # Function to capture and print the inputs when the button is clicked
 def AngleCorrection(b):
