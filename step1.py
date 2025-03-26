@@ -10,6 +10,8 @@ from google.auth import default
 from google.colab import auth
 import matplotlib.pyplot as plt
 import numpy as np
+from io import BytesIO
+import base64
 
 # Mount Google Drive and authenticate
 drive.mount('/content/drive')
@@ -61,6 +63,12 @@ def create_input_boxes():
     resultBox.style.display = "none";
     resultBox.readOnly = true;
 
+    // Plot result box (for embedding the plot)
+    var plotBox = document.createElement("div");
+    plotBox.id = "plotBox";
+    plotBox.style.margin = "10px";
+    plotBox.style.height = "400px";  // Set a height for the plot display
+
     // Button click action
     button.onclick = function() {
         var val1 = document.getElementById("input1").value;
@@ -82,6 +90,7 @@ def create_input_boxes():
     container.appendChild(input3);
     container.appendChild(button);
     container.appendChild(resultBox);
+    container.appendChild(plotBox);
     document.body.appendChild(container);
     '''))
     
@@ -137,8 +146,8 @@ def update_angle_result(val1, val2, val3):
     new_mouse_id = head_parameter.columns[-1]  # Assuming last column is new mouse ID
 
     # Update the sheet with the advised angle at the 8th column (index 8)
-    head_parameter.iloc[7,-1] = val2
-    head_parameter.iloc[8,-1] = advised_angle
+    head_parameter.iloc[-1,7] = val2
+    head_parameter.iloc[-1,8] = advised_angle
 
     # Write the updated DataFrame back to the sheet
     worksheet.clear()
@@ -185,7 +194,16 @@ def plot_histogram(mousedata):
         ax.scatter(mousedata, max(y), color='blue', marker='.', s=50)
         ax.set_title("PARAMETER OUT OF BOUNDS!", fontweight="bold")
 
-    plt.show()
+    # Convert plot to image and display in result box
+    img_buf = BytesIO()
+    fig.savefig(img_buf, format='png')
+    img_buf.seek(0)
+    img_base64 = base64.b64encode(img_buf.read()).decode('utf-8')
+
+    display(Javascript(f'''
+    var plotBox = document.getElementById("plotBox");
+    plotBox.innerHTML = '<img src="data:image/png;base64,' + "{img_base64}" + '" />';
+    '''))
 
 # Register and run the callback to update angle and sheet
 output.register_callback('notebook.update_angle_result', update_angle_result)
