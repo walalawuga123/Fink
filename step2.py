@@ -125,7 +125,7 @@ def create_input_boxes():
     }
 
     finishButton.onclick = function() {
-        google.colab.kernel.invokeFunction("notebook.finish_correction", [], {});
+        google.colab.kernel.invokeFunction("notebook.finish_correction", [val1, val2, val3, val4, val5, val6, val7, val8], {});
     }
     '''))
     
@@ -195,23 +195,13 @@ def update_correction_result(xR1000, xR3000, zR1000, zR3000, xL1000, xL3000, zL1
     output_result(result)
 
 # Callback function to finish correction and update the Google Sheet
-def finish_correction():
+def finish_correction(final_xR1000,final_xR3000,final_zR1000,final_zR3000,final_xL1000,final_xL3000,final_zL1000,final_zL3000):
     # Fetch the head_parameter DataFrame from Google Sheets
     file_id = '17t6CB6Nze274z1od3cmfdKnHZ2OMLdFFay7yMQ_Ofi0'  # Use the correct Google Sheet ID
     sh = gc.open_by_key(file_id)  # Open the Google Sheet with the file_id
     worksheet = sh.get_worksheet(0)  # Select the first sheet
 
     head_parameter = pd.DataFrame(worksheet.get_all_records())  # Fetch all records from the sheet
-    
-    # Collect final input for all columns via JavaScript prompt (ensure user interaction)
-    final_xR1000 = document.getElementById("xR1000").value
-    final_xR3000 = document.getElementById("xR3000").value
-    final_zR1000 = document.getElementById("zR1000").value
-    final_zR3000 = document.getElementById("zR3000").value
-    final_xL1000 = document.getElementById("xL1000").value
-    final_xL3000 = document.getElementById("xL3000").value
-    final_zL1000 = document.getElementById("zL1000").value
-    final_zL3000 = document.getElementById("zL3000").value
     
     # Update the sheet with the final values
     head_parameter.iloc[17, -1] = final_xR1000
